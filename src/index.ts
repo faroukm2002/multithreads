@@ -2,10 +2,12 @@ import express  from "express";
 import dotenv from "dotenv";
 import { dbConnection } from "../database/dbConnection";
 import { Request, Response } from "express";
+import userRouter from "./modules/user/user.routes";
 
 dotenv.config()
 
 const app = express();
+  app.use("/api/v1/user", userRouter);
 
 // Middleware for JSON body parsing
 app.use(express.json({limit: "10kb"}));
