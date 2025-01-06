@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { userModel } from "../../../database/models/user.model";
 import { catchError } from "../../utils/catchError";
 import bcrypt from 'bcrypt';
-import generateToken from "../../utils/generateToken";
 import { AppError } from "../../utils/AppError";
+import generateToken from "../../utils/generateToken";
 import verifyToken from "../../utils/verifyToken";
 
 const signUp = catchError(async (req: Request, res: Response, next: NextFunction) => {
