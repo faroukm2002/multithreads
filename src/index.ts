@@ -3,10 +3,12 @@ import dotenv from "dotenv";
 import { dbConnection } from "../database/dbConnection";
 import { Request, Response } from "express";
 import userRouter from "./modules/user/user.routes";
+import authRouter from "./modules/auth/auth.routes";
 
 dotenv.config()
 
 const app = express();
+  app.use("/api/v1/auth", authRouter);
   app.use("/api/v1/user", userRouter);
 
 // Middleware for JSON body parsing
