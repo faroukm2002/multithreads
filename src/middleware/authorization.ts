@@ -25,8 +25,7 @@ const allowedto = (roles: string[]) => {
 
         // 2- verfy token
         let decoded = verifyToken(token);
-    console.log("Decoded token:", decoded);  // Check token payload
-
+        
     if (!decoded.id) {
       return next(new AppError("Invalid token Payload", 401));
     }
