@@ -13,19 +13,19 @@ const allowedto = (roles: string[]) => {
     const { authorization } = req.headers;
 
         // 1- Check if authorization header is present and starts with Bearer key
-        if (!authorization?.startsWith(process.env.BEARER_KEY || "Bearer")) {
+        if (!authorization?.startsWith(process.env.BEARER_KEY as  string  )) {
       return next(new AppError("Invalid Bearer Key", 400));
     }
 
         // 1- check we have token or not 
-        const token = authorization.split(process.env.BEARER_KEY || "Bearer")[1]?.trim();
+        const token = authorization.split(process.env.BEARER_KEY as string)[1]?.trim();
     if (!token) {
       return next(new AppError("Token is missing", 400));
     }
 
         // 2- verfy token
         let decoded = verifyToken(token);
-        
+
     if (!decoded.id) {
       return next(new AppError("Invalid token Payload", 401));
     }
