@@ -8,7 +8,8 @@
     "strict": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    
   },
   "include": [
     "src/**/*",

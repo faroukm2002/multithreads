@@ -1,18 +1,19 @@
 import express  from "express"
     import  * as user  from "./user.controller"
+import { allowedto } from "../../middleware/authorization"
 const userRouter =express.Router()
 
 
 
 userRouter.route('/').
-get(user.getAllUser)
+get( user.getAllUser)
 
 
 userRouter.route('/:id').
-get(user.getUserByID).
+get(allowedto(["admin"]),user.getUserByID).
 
-put(user.updateUser).
-delete(user.deleteUser)
+put(allowedto(["admin"]),user.updateUser).
+delete(allowedto(["admin"]),user.deleteUser)
 
 export default userRouter
 

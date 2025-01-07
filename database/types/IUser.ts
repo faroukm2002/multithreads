@@ -11,3 +11,13 @@ export interface IUser extends Document {
     _id: ObjectId;
     changePasswordAt: Date
 }
+
+
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUser;
+    }
+  }
+}
