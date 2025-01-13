@@ -15,10 +15,10 @@ export class ApiFeatures<T> {
 
   pagination():this
  {
-    let page_limit = 4;
+    const page_limit = 4;
   let page = this.queryString.page * 1 || 1;
   if (this.queryString.page <= 0) page = 1;
-  let skip = (page - 1) * page_limit;
+  const skip = (page - 1) * page_limit;
   this.page=page
   this.mongooseQuery.skip(skip).limit(page_limit)
 return this
@@ -29,9 +29,9 @@ return this
 
 filter():this{
   let filterObj: Record<string, any> ={...this.queryString};
-  console.log(filterObj);
+  // console.log(filterObj);
 
-  let excludeQuery=['page','sort','fields','keyword']
+  const excludeQuery=['page','sort','fields','keyword']
   excludeQuery.forEach((q)=>{
     delete filterObj[q]
   })
@@ -50,7 +50,7 @@ sort(){
 
 if (this.queryString.sort)
 {
-  let sortBy =this.queryString.sort.split(",").join(" "); //["-price","sold"] => -price sold
+  const sortBy =this.queryString.sort.split(",").join(" "); //["-price","sold"] => -price sold
   this.mongooseQuery.sort(sortBy)
 }
 return this
@@ -78,7 +78,7 @@ return this
 fields(){
 if (this.queryString.fields)
 {
-  let fields = this.queryString.fields.split(",").join(" "); 
+  const fields = this.queryString.fields.split(",").join(" "); 
   this.mongooseQuery.select(fields)
 }
 

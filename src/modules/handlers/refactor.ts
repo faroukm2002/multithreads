@@ -2,7 +2,7 @@ import { AppError } from "../../utils/AppError";
 import { catchError } from "../../utils/catchError";
 import { Model } from "mongoose"; // Import Model type from Mongoose
 
-export const deleteOne =<T>(model: Model<T>, name: string) => {
+export const deleteOne = <T>(model: Model<T>, name: string) => {
   return catchError(async (req, res, next) => {
     const { id } = req.params;
     const document = await model.findByIdAndDelete(id); // Find and delete the document
@@ -21,10 +21,7 @@ export const deleteOne =<T>(model: Model<T>, name: string) => {
   });
 };
 
-
-
-
-    // if(!category){
+// if(!category){
 
 //   res.status(404).json({message:"category not found",})
 
@@ -32,6 +29,5 @@ export const deleteOne =<T>(model: Model<T>, name: string) => {
 //   else{
 //     // created
 //     res.status(201).json({message:"success",category})
-    
-//     }
 
+//     }

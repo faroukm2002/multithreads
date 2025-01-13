@@ -5,12 +5,8 @@ import { AppError } from "../../utils/AppError";
 import { ApiFeatures } from "../../utils/Apifeatures";
 import { deleteOne } from "../handlers/refactor";
 
-
-
-
-
 // const addUser= catchError(async(req:Request,res:Response,next:NextFunction)=>{
-//   let users=await userModel.findOne({email:req.body.email})
+//   const users=await userModel.findOne({email:req.body.email})
 //   if(users) return next(new AppError("duplicate email",409))
 // const User= new userModel(req.body)
 // await User.save()
@@ -19,59 +15,46 @@ import { deleteOne } from "../handlers/refactor";
 
 // })
 
+const getAllUser = catchError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const apifeatures = new ApiFeatures(userModel.find(), req.query)
+      .pagination()
+      .filter()
+      .fields()
+      .search()
+      .sort();
 
+    const users = await apifeatures.mongooseQuery;
+    res.status(201).json({ message: "success", page: apifeatures.page, users });
+  }
+);
 
- 
-const getAllUser= catchError(async(req:Request,res:Response,next:NextFunction)=>{
-  let apifeatures= new ApiFeatures( userModel.find(),req.query)
-  .pagination().filter().fields().search().sort()
-  
-    const users = await apifeatures.mongooseQuery
-    res.status(201).json({ message: 'success', page:apifeatures.page, users });
-  
-  })
+const getUserByID = catchError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await userModel.findById(req.params.id);
+    res.status(201).json({ message: "success", user });
+  }
+);
 
+const updateUser = catchError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const User = await userModel.findByIdAndUpdate(id, req.body, { new: true });
+    // created
 
-  const getUserByID= catchError(async(req:Request,res:Response,next:NextFunction)=>{
-    const user= await userModel.findById(req.params.id)
-    res.status(201).json({message:"success",user})
-     
-    })
- 
+    // !User && res.status(404).json({message:"User not found",})
+    !User && next(new AppError("User not found", 404));
 
-const updateUser= catchError(async(req:Request,res:Response,next:NextFunction)=>{
-  const{id}=req.params
-   const User= await userModel.findByIdAndUpdate(
-    id,
-    req.body,
-    {new:true})
-  // created
+    User && res.status(201).json({ message: "success", User });
+  }
+);
 
-  // !User && res.status(404).json({message:"User not found",}) 
-  !User && next(new AppError('User not found',404))
+const deleteUser = deleteOne(userModel, "User");
 
-  User &&   res.status(201).json({message:"success",User})
-
-
-  }  )
-  
-
-
-
-
-    
-  
-
-  const deleteUser= deleteOne(userModel,'User')
-
- 
-export { 
-  // addUser,  
+export {
+  // addUser,
   getAllUser,
   getUserByID,
   updateUser,
   deleteUser,
-
-
-
- }
+};
