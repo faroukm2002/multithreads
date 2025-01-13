@@ -1,3 +1,5 @@
+import cluster from "cluster";
+import os from "os";
 import express, { NextFunction } from "express";
 import dotenv from "dotenv";
 import { dbConnection } from "../database/dbConnection";
@@ -18,21 +20,37 @@ app.use(express.urlencoded({ extended: false })); // Parses URL-encoded request 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 
-const port: number = parseInt(process.env.PORT as string) || 10000;
+const numCPUs = os.cpus().length;
+const port = parseInt(process.env.PORT as string) || 10000;
 
+// Workers can share the same port
 dbConnection();
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello from Node js!");
 });
 
-app.listen(port, (): void =>
-  console.log(`Example app listening on port http://localhost:${port}`)
-);
+if (cluster.isPrimary) {
+  console.log(`Primary ${process.pid} is running`);
 
-// Handle invalid URLs
-app.use("*", (req: Request, res: Response, next: NextFunction) => {
-  next(new AppError(`Invalid URL ${req.originalUrl}`, 404));
-});
+  // Fork workers
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
 
-// Global Error Handling Middleware
-app.use(globalError);
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died. Restarting...`);
+    cluster.fork();
+  });
+} else {
+  app.listen(port, (): void =>
+    console.log(`Worker ${process.pid} started on http://localhost:${port}`)
+  );
+
+  // Handle invalid URLs
+  app.use("*", (req: Request, res: Response, next: NextFunction) => {
+    next(new AppError(`Invalid URL ${req.originalUrl}`, 404));
+  });
+
+  // Global Error Handling Middleware
+  app.use(globalError);
+}
